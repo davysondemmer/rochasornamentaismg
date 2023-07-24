@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 1373px;
+            height: 822px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Licenciamentosde2013a2019_1.js"></script>
+        <script src="data/Licenciamentosapartirde2020_2.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:20, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_GoogleHybrid_0');
+        map.getPane('pane_GoogleHybrid_0').style.zIndex = 400;
+        var layer_GoogleHybrid_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleHybrid_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 20,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleHybrid_0;
+        map.addLayer(layer_GoogleHybrid_0);
+        function pop_Licenciamentosde2013a2019_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Empreendimento</th>\
+                        <td>' + (feature.properties['Empreendimento'] !== null ? autolinker.link(feature.properties['Empreendimento'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Município</th>\
+                        <td>' + (feature.properties['Município'] !== null ? autolinker.link(feature.properties['Município'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Atividade</th>\
+                        <td>' + (feature.properties['Atividade'] !== null ? autolinker.link(feature.properties['Atividade'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Classe</th>\
+                        <td>' + (feature.properties['Classe'] !== null ? autolinker.link(feature.properties['Classe'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Concessão</th>\
+                        <td>' + (feature.properties['Concessão'] !== null ? autolinker.link(feature.properties['Concessão'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ano</th>\
+                        <td>' + (feature.properties['Ano'] !== null ? autolinker.link(feature.properties['Ano'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Validade</th>\
+                        <td>' + (feature.properties['Validade'] !== null ? autolinker.link(feature.properties['Validade'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Licenciamentosde2013a2019_1_0(feature) {
+            switch(String(feature.properties['Classe'])) {
+                case '1':
+                    return {
+                pane: 'pane_Licenciamentosde2013a2019_1',
+                radius: 3.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,32,77,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_Licenciamentosde2013a2019_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_Licenciamentosde2013a2019_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(13,8,135,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_Licenciamentosde2013a2019_1',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_Licenciamentosde2013a2019_1',
+                radius: 7.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Licenciamentosde2013a2019_1');
+        map.getPane('pane_Licenciamentosde2013a2019_1').style.zIndex = 401;
+        map.getPane('pane_Licenciamentosde2013a2019_1').style['mix-blend-mode'] = 'normal';
+        var layer_Licenciamentosde2013a2019_1 = new L.geoJson(json_Licenciamentosde2013a2019_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Licenciamentosde2013a2019_1',
+            layerName: 'layer_Licenciamentosde2013a2019_1',
+            pane: 'pane_Licenciamentosde2013a2019_1',
+            onEachFeature: pop_Licenciamentosde2013a2019_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Licenciamentosde2013a2019_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Licenciamentosde2013a2019_1);
+        map.addLayer(layer_Licenciamentosde2013a2019_1);
+        function pop_Licenciamentosapartirde2020_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Município</th>\
+                        <td>' + (feature.properties['Município'] !== null ? autolinker.link(feature.properties['Município'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Empreendimento</th>\
+                        <td>' + (feature.properties['Empreendimento'] !== null ? autolinker.link(feature.properties['Empreendimento'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Atividade</th>\
+                        <td>' + (feature.properties['Atividade'] !== null ? autolinker.link(feature.properties['Atividade'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Classe</th>\
+                        <td>' + (feature.properties['Classe'] !== null ? autolinker.link(feature.properties['Classe'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Link</th>\
+                        <td>' + (feature.properties['Link'] !== null ? autolinker.link(feature.properties['Link'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Data de emissão</th>\
+                        <td>' + (feature.properties['Data de emissão'] !== null ? autolinker.link(feature.properties['Data de emissão'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Data de validade</th>\
+                        <td>' + (feature.properties['Data de validade'] !== null ? autolinker.link(feature.properties['Data de validade'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Vigência</th>\
+                        <td>' + (feature.properties['Vigência'] !== null ? autolinker.link(feature.properties['Vigência'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Licenciamentosapartirde2020_2_0(feature) {
+            switch(String(feature.properties['Classe'])) {
+                case '2':
+                    return {
+                pane: 'pane_Licenciamentosapartirde2020_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_Licenciamentosapartirde2020_2',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(13,8,135,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_Licenciamentosapartirde2020_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Licenciamentosapartirde2020_2');
+        map.getPane('pane_Licenciamentosapartirde2020_2').style.zIndex = 402;
+        map.getPane('pane_Licenciamentosapartirde2020_2').style['mix-blend-mode'] = 'normal';
+        var layer_Licenciamentosapartirde2020_2 = new L.geoJson(json_Licenciamentosapartirde2020_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Licenciamentosapartirde2020_2',
+            layerName: 'layer_Licenciamentosapartirde2020_2',
+            pane: 'pane_Licenciamentosapartirde2020_2',
+            onEachFeature: pop_Licenciamentosapartirde2020_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Licenciamentosapartirde2020_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Licenciamentosapartirde2020_2);
+        map.addLayer(layer_Licenciamentosapartirde2020_2);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Licenciamentos a partir de 2020<br /><table><tr><td style="text-align: center;"><img src="legend/Licenciamentosapartirde2020_2_Classe20.png" /></td><td>Classe 2</td></tr><tr><td style="text-align: center;"><img src="legend/Licenciamentosapartirde2020_2_Classe31.png" /></td><td>Classe 3</td></tr><tr><td style="text-align: center;"><img src="legend/Licenciamentosapartirde2020_2_Classe42.png" /></td><td>Classe 4</td></tr></table>': layer_Licenciamentosapartirde2020_2,'Licenciamentos de 2013 a 2019<br /><table><tr><td style="text-align: center;"><img src="legend/Licenciamentosde2013a2019_1_Classe10.png" /></td><td>Classe 1</td></tr><tr><td style="text-align: center;"><img src="legend/Licenciamentosde2013a2019_1_Classe21.png" /></td><td>Classe 2</td></tr><tr><td style="text-align: center;"><img src="legend/Licenciamentosde2013a2019_1_Classe32.png" /></td><td>Classe 3</td></tr><tr><td style="text-align: center;"><img src="legend/Licenciamentosde2013a2019_1_Classe43.png" /></td><td>Classe 4</td></tr><tr><td style="text-align: center;"><img src="legend/Licenciamentosde2013a2019_1_Classe54.png" /></td><td>Classe 5</td></tr></table>': layer_Licenciamentosde2013a2019_1,"Google Hybrid": layer_GoogleHybrid_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_Licenciamentosde2013a2019_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Classe'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Empreendimento": "str","Município": "str","Classe": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Empreendimento = document.createElement('div');
+            div_Empreendimento.id = "div_Empreendimento";
+            div_Empreendimento.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Empreendimento);
+            sel_Empreendimento = document.createElement('select');
+            sel_Empreendimento.multiple = true;
+            sel_Empreendimento.size = 10;
+            sel_Empreendimento.id = "sel_Empreendimento";
+            var Empreendimento_options_str = "<option value='' unselected></option>";
+            sel_Empreendimento.onchange = function(){filterFunc()};
+            Empreendimento_options_str  += '<option value="ALPHA STONES COMERCIO DE MARMORES E GRANITOS LTDA">ALPHA STONES COMERCIO DE MARMORES E GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="ALTERFLEX MINERACAO SALINAS LTDA">ALTERFLEX MINERACAO SALINAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="ANDRADE-MINAS GRANITOS LTDA">ANDRADE-MINAS GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="ANTONIO ANASTACIO DA SILVA">ANTONIO ANASTACIO DA SILVA</option>';
+            Empreendimento_options_str  += '<option value="ANTONIO CARLOS ALVARES FERNANDES 12380946604">ANTONIO CARLOS ALVARES FERNANDES 12380946604</option>';
+            Empreendimento_options_str  += '<option value="AREAL CASSIA LTDA">AREAL CASSIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="ARIDEGRAN GRANITOS LTDA">ARIDEGRAN GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="ATLANTICA TRADING EXPORTACAO DE GRANITO LTDA">ATLANTICA TRADING EXPORTACAO DE GRANITO LTDA</option>';
+            Empreendimento_options_str  += '<option value="Andrade Minas Granitos Ltda.">Andrade Minas Granitos Ltda.</option>';
+            Empreendimento_options_str  += '<option value="BELA ROCHA MINERACAO LTDA">BELA ROCHA MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="BLACK STONE GRANITOS LTDA">BLACK STONE GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="BLACK STONE MINERACAO LTDA">BLACK STONE MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="BONTEMPI IMOVEIS LTDA">BONTEMPI IMOVEIS LTDA</option>';
+            Empreendimento_options_str  += '<option value="BONTEMPI IMÓVEIS LTDA.">BONTEMPI IMÓVEIS LTDA.</option>';
+            Empreendimento_options_str  += '<option value="BRAMAR COMERCIO EXTERIOR LTDA">BRAMAR COMERCIO EXTERIOR LTDA</option>';
+            Empreendimento_options_str  += '<option value="BRAMATEX GRANITOS LTDA">BRAMATEX GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="BRASILGRAN STONES - EIRELI">BRASILGRAN STONES - EIRELI</option>';
+            Empreendimento_options_str  += '<option value="BRENORTE EMPREENDIMENTOS LTDA">BRENORTE EMPREENDIMENTOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="BRIX MINERACAO DO BRASIL LTDA">BRIX MINERACAO DO BRASIL LTDA</option>';
+            Empreendimento_options_str  += '<option value="C. Fernando R. da Paz & Cia Ltda">C. Fernando R. da Paz & Cia Ltda</option>';
+            Empreendimento_options_str  += '<option value="C. Fernando R. da Paz & Cia Ltda.">C. Fernando R. da Paz & Cia Ltda.</option>';
+            Empreendimento_options_str  += '<option value="CERAMICA ALMEIDA PIRES LTDA">CERAMICA ALMEIDA PIRES LTDA</option>';
+            Empreendimento_options_str  += '<option value="CLAUDIO CESAR ALVES DA SILVA PEDRAS BASALTO">CLAUDIO CESAR ALVES DA SILVA PEDRAS BASALTO</option>';
+            Empreendimento_options_str  += '<option value="CLAUDIO HENRIQUE DE OLIVEIRA E CIA LTDA">CLAUDIO HENRIQUE DE OLIVEIRA E CIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="COMERCIAL EXPORTADORA RINOLDI LTDA./FAZENDA BAÚ">COMERCIAL EXPORTADORA RINOLDI LTDA./FAZENDA BAÚ</option>';
+            Empreendimento_options_str  += '<option value="COOPERATIVA DOS EXTRATORES DE PEDRAS DO PATRIMONIO DE SAO THOME DAS LETRAS LTDA">COOPERATIVA DOS EXTRATORES DE PEDRAS DO PATRIMONIO DE SAO THOME DAS LETRAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="CRISTAL MINERACAO LTDA">CRISTAL MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="Carlos Fernando Rodrigues da Paz & Cia. Ltda">Carlos Fernando Rodrigues da Paz & Cia. Ltda</option>';
+            Empreendimento_options_str  += '<option value="Carlos Fernando da Paz & Cia. Ltda.">Carlos Fernando da Paz & Cia. Ltda.</option>';
+            Empreendimento_options_str  += '<option value="DIAMANTINA QUARTZITE ROCHAS ORNAMENTAIS LTDA">DIAMANTINA QUARTZITE ROCHAS ORNAMENTAIS LTDA</option>';
+            Empreendimento_options_str  += '<option value="DJ GRANITOS EIRELI">DJ GRANITOS EIRELI</option>';
+            Empreendimento_options_str  += '<option value="DURANDE GRANITOS LTDA">DURANDE GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="EMPRESA DE MINERACAO BORGES LTDA">EMPRESA DE MINERACAO BORGES LTDA</option>';
+            Empreendimento_options_str  += '<option value="ESPLENDOR MINERACAO E COMERCIO E EXPORTACAO E IMPORTACAO LTDA">ESPLENDOR MINERACAO E COMERCIO E EXPORTACAO E IMPORTACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="EXOTIC MINERACAO LTDA">EXOTIC MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="EXTRACAO PEDRAS MAMONO LIMITADA">EXTRACAO PEDRAS MAMONO LIMITADA</option>';
+            Empreendimento_options_str  += '<option value="F. P. GRAN MINERACAO LTDA">F. P. GRAN MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="FABIO DE OLIVEIRA ROCHA LIMITADA">FABIO DE OLIVEIRA ROCHA LIMITADA</option>';
+            Empreendimento_options_str  += '<option value="FERNANDO GABRIEL DA SILVA ARAUJO">FERNANDO GABRIEL DA SILVA ARAUJO</option>';
+            Empreendimento_options_str  += '<option value="FHAE MINERACAO LTDA">FHAE MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="FORTALEZA ROCHAS ORNAMENTAIS LTDA">FORTALEZA ROCHAS ORNAMENTAIS LTDA</option>';
+            Empreendimento_options_str  += '<option value="FRAMAX ORNELAS SENA">FRAMAX ORNELAS SENA</option>';
+            Empreendimento_options_str  += '<option value="FRANCISCO XAVIER VILELA DE FARIA ME">FRANCISCO XAVIER VILELA DE FARIA ME</option>';
+            Empreendimento_options_str  += '<option value="G A M STONE LTDA">G A M STONE LTDA</option>';
+            Empreendimento_options_str  += '<option value="GALANTE GRANITO  LTDA">GALANTE GRANITO  LTDA</option>';
+            Empreendimento_options_str  += '<option value="GALAVA STONES LTDA">GALAVA STONES LTDA</option>';
+            Empreendimento_options_str  += '<option value="GAMA MINERADORA ASSUNCAO LTDA">GAMA MINERADORA ASSUNCAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="GAYA MINERACAO LTDA">GAYA MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="GIBRALTAR GRANITOS LTDA">GIBRALTAR GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="GOMES E FILHOS PEDRAS LTDA">GOMES E FILHOS PEDRAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRAM SUL GRANITOS E MARMORES LTDA">GRAM SUL GRANITOS E MARMORES LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRAMINETE GRANITOS MINETE LTDA">GRAMINETE GRANITOS MINETE LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRAN MINAS ROCHAS ORNAMENTAIS LTDA">GRAN MINAS ROCHAS ORNAMENTAIS LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRAN VALE LTDA. EPP">GRAN VALE LTDA. EPP</option>';
+            Empreendimento_options_str  += '<option value="GRAN VIANA PEDREIRA INDUSTRIA E COMERCIO EIRELI">GRAN VIANA PEDREIRA INDUSTRIA E COMERCIO EIRELI</option>';
+            Empreendimento_options_str  += '<option value="GRANASA ? GRANITOS NACIONAIS LTDA">GRANASA ? GRANITOS NACIONAIS LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANBLACK COMERCIO DE GRANITO LTDA">GRANBLACK COMERCIO DE GRANITO LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANITO BORCHARDT LTDA">GRANITO BORCHARDT LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANITO&apos;S LITORAL LTDA">GRANITO&apos;S LITORAL LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANITOS EMERICK & SERAFIM LTDA">GRANITOS EMERICK & SERAFIM LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANITOS LARANJEIRA LTDA">GRANITOS LARANJEIRA LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANITOS LINDEMBERG LTDA">GRANITOS LINDEMBERG LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANITOS ROCHA BRANCA LTDA">GRANITOS ROCHA BRANCA LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANROCHA MINERACAO EIRELI">GRANROCHA MINERACAO EIRELI</option>';
+            Empreendimento_options_str  += '<option value="GRANSENA EXPORTACAO E COMERCIO LTDA">GRANSENA EXPORTACAO E COMERCIO LTDA</option>';
+            Empreendimento_options_str  += '<option value="GRANSENA EXPORTAÇĂO E COMÉRCIO LTDA.">GRANSENA EXPORTAÇĂO E COMÉRCIO LTDA.</option>';
+            Empreendimento_options_str  += '<option value="GRANULITO MINERADORA DE MARMORES E GRANITOS LTDA">GRANULITO MINERADORA DE MARMORES E GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="GSC MINERACAO LTDA">GSC MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="GUIDONI ORNAMENTAL ROCKS LTDA">GUIDONI ORNAMENTAL ROCKS LTDA</option>';
+            Empreendimento_options_str  += '<option value="Gran Vale Ltda. ? EPP">Gran Vale Ltda. ? EPP</option>';
+            Empreendimento_options_str  += '<option value="HALEF VINICIUS ANDRADE">HALEF VINICIUS ANDRADE</option>';
+            Empreendimento_options_str  += '<option value="HUMBERTO CAPISTRANO DA SILVA - CPF-886.205.066-68">HUMBERTO CAPISTRANO DA SILVA - CPF-886.205.066-68</option>';
+            Empreendimento_options_str  += '<option value="ICE MINERACAO LTDA">ICE MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="IES SERVICOS DE APOIO A ATIVIDADE MINERAL LTDA">IES SERVICOS DE APOIO A ATIVIDADE MINERAL LTDA</option>';
+            Empreendimento_options_str  += '<option value="IMPÉRIO MINERAÇĂO & TRANSPORTES LTDA./FAZENDA CÓRREGO DO JACARÉ">IMPÉRIO MINERAÇĂO & TRANSPORTES LTDA./FAZENDA CÓRREGO DO JACARÉ</option>';
+            Empreendimento_options_str  += '<option value="INTERNACIONALE GRANITE LTDA">INTERNACIONALE GRANITE LTDA</option>';
+            Empreendimento_options_str  += '<option value="IRMAOS CAPISTRANO LTDA">IRMAOS CAPISTRANO LTDA</option>';
+            Empreendimento_options_str  += '<option value="ISAMAR PEDRA ARDOSIA LTDA">ISAMAR PEDRA ARDOSIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="ITINGA MINERACAO LTDA">ITINGA MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="IZIMEX PEDRAS DO BRASIL LTDA">IZIMEX PEDRAS DO BRASIL LTDA</option>';
+            Empreendimento_options_str  += '<option value="Irmăos Capistrano Ltda">Irmăos Capistrano Ltda</option>';
+            Empreendimento_options_str  += '<option value="Itinga Mineraçăo Ltda">Itinga Mineraçăo Ltda</option>';
+            Empreendimento_options_str  += '<option value="Itinga Mineraçăo Ltda.">Itinga Mineraçăo Ltda.</option>';
+            Empreendimento_options_str  += '<option value="JH INCORPORACOES E URBANIZACAO LTDA">JH INCORPORACOES E URBANIZACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="JOAO ALVES DA SILVA">JOAO ALVES DA SILVA</option>';
+            Empreendimento_options_str  += '<option value="JOSE CARLOS DOS REIS EIRELI">JOSE CARLOS DOS REIS EIRELI</option>';
+            Empreendimento_options_str  += '<option value="JOSE FLAVIO DA SILVEIRA ME">JOSE FLAVIO DA SILVEIRA ME</option>';
+            Empreendimento_options_str  += '<option value="JRS COMERCIO DE PEDRAS LTDA">JRS COMERCIO DE PEDRAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="LA PIETA MINERACAO LTDA">LA PIETA MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="LAVRAR MINERACAO, LTDA">LAVRAR MINERACAO, LTDA</option>';
+            Empreendimento_options_str  += '<option value="LEANDRO FORNAZIER EIRELI">LEANDRO FORNAZIER EIRELI</option>';
+            Empreendimento_options_str  += '<option value="LENICE LOPES FREIRE VILELA & CIA LTDA">LENICE LOPES FREIRE VILELA & CIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="LESTE GRANITOS LTDA">LESTE GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="LIBERDADE MINERADORA LTDA">LIBERDADE MINERADORA LTDA</option>';
+            Empreendimento_options_str  += '<option value="LIBERTY ROCHAS ORNAMENTAIS LTDA">LIBERTY ROCHAS ORNAMENTAIS LTDA</option>';
+            Empreendimento_options_str  += '<option value="LIVIGRAN MINERACAO E EXPORTACAO LTDA">LIVIGRAN MINERACAO E EXPORTACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="LUIZ CLAUDIO MACHADO">LUIZ CLAUDIO MACHADO</option>';
+            Empreendimento_options_str  += '<option value="M. CEZAR FERREIRA">M. CEZAR FERREIRA</option>';
+            Empreendimento_options_str  += '<option value="MAGBAN MARMORES E GRANITOS AQUIDABAN LTDA">MAGBAN MARMORES E GRANITOS AQUIDABAN LTDA</option>';
+            Empreendimento_options_str  += '<option value="MAGNITOS - MAGNAGO GRANITOS LTDA">MAGNITOS - MAGNAGO GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="MARACANA MINERACAO LTDA">MARACANA MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MARBRASA NORTE MINERADORA LTDA">MARBRASA NORTE MINERADORA LTDA</option>';
+            Empreendimento_options_str  += '<option value="MARCEL MINERACAO LTDA">MARCEL MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MARMORES E GRANITOS TEIXEIRA LTDA">MARMORES E GRANITOS TEIXEIRA LTDA</option>';
+            Empreendimento_options_str  += '<option value="MEANI MINERACAO LTDA">MEANI MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO AGUA LIMPA LTDA.">MINERACAO AGUA LIMPA LTDA.</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO ALTO GRANDE E AMAROS LTDA">MINERACAO ALTO GRANDE E AMAROS LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO ALVORADA LTDA">MINERACAO ALVORADA LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO ARARAT EIRELI">MINERACAO ARARAT EIRELI</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO BRASILMAG LTDA">MINERACAO BRASILMAG LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO CALCADAO LTDA">MINERACAO CALCADAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO CAMPO ALEGRE EIRELI">MINERACAO CAMPO ALEGRE EIRELI</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO CASTELO LTDA.">MINERACAO CASTELO LTDA.</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO CHAPADA DAS PERDIZES LTDA">MINERACAO CHAPADA DAS PERDIZES LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO CORCOVADO DE MINAS LTDA">MINERACAO CORCOVADO DE MINAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO E COMERCIO DE PEDRAS MANDEMBE LTDA">MINERACAO E COMERCIO DE PEDRAS MANDEMBE LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO FELIX LTDA">MINERACAO FELIX LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO FISCHER LTDA">MINERACAO FISCHER LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO GRANMOGOL LIMITADA">MINERACAO GRANMOGOL LIMITADA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO JAGUARARI LTDA">MINERACAO JAGUARARI LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO JEQUITAI LTDA">MINERACAO JEQUITAI LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO JUPITER LTDA">MINERACAO JUPITER LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO K3 EIRELI">MINERACAO K3 EIRELI</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO MARIANELLI LTDA">MINERACAO MARIANELLI LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO MAROTO DIAMANTINA LTDA">MINERACAO MAROTO DIAMANTINA LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO MATA VERDE LTDA">MINERACAO MATA VERDE LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO MINAS ELEVAR LTDA">MINERACAO MINAS ELEVAR LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO MONTEIRO COUTINHO COMERCIO IMPORTACAO E EXPORTACAO LTDA">MINERACAO MONTEIRO COUTINHO COMERCIO IMPORTACAO E EXPORTACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO NEW CALEDONIA LTDA">MINERACAO NEW CALEDONIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO PANCIERI MINAS LTDA">MINERACAO PANCIERI MINAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO PEDRA AZUL LTDA">MINERACAO PEDRA AZUL LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO PROGRAMAR LTDA">MINERACAO PROGRAMAR LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO R. R. LTDA">MINERACAO R. R. LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO RED PICASSO LTDA">MINERACAO RED PICASSO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO RIO SUL LTDA.">MINERACAO RIO SUL LTDA.</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO SANTA INES LTDA">MINERACAO SANTA INES LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO SANTA IZABEL LTDA">MINERACAO SANTA IZABEL LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO SAO SEBASTIAO LTDA">MINERACAO SAO SEBASTIAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO SERRA ALTA DE SAO TOME LTDA">MINERACAO SERRA ALTA DE SAO TOME LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO TREMENDAL LTDA">MINERACAO TREMENDAL LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO VALE BRANCO LTDA">MINERACAO VALE BRANCO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO VALE DO RIO PARDO EIRELI">MINERACAO VALE DO RIO PARDO EIRELI</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO VALE DO RIO PARDO LTDA">MINERACAO VALE DO RIO PARDO LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERACAO VITORIA EIRELI">MINERACAO VITORIA EIRELI</option>';
+            Empreendimento_options_str  += '<option value="MINERADORA HARD STONE LTDA">MINERADORA HARD STONE LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERADORA POR DO SOL LTDA">MINERADORA POR DO SOL LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERAÇĂO ALVES COMÉRCIO E EXTRAÇĂO DE PEDRAS EIRELI">MINERAÇĂO ALVES COMÉRCIO E EXTRAÇĂO DE PEDRAS EIRELI</option>';
+            Empreendimento_options_str  += '<option value="MINERAÇĂO CORCOVADO DE MINAS LTDA">MINERAÇĂO CORCOVADO DE MINAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERAÇĂO E COMÉRCIO DE PEDRAS MANDEMBE LTDA">MINERAÇĂO E COMÉRCIO DE PEDRAS MANDEMBE LTDA</option>';
+            Empreendimento_options_str  += '<option value="MINERFAL MINAS MINERADORA LTDA">MINERFAL MINAS MINERADORA LTDA</option>';
+            Empreendimento_options_str  += '<option value="MONTE SANTO STONE S/A">MONTE SANTO STONE S/A</option>';
+            Empreendimento_options_str  += '<option value="MONTE SIAO MINERACAO EIRELI">MONTE SIAO MINERACAO EIRELI</option>';
+            Empreendimento_options_str  += '<option value="MOSAICOS SAO TOME LTDA">MOSAICOS SAO TOME LTDA</option>';
+            Empreendimento_options_str  += '<option value="MRM MINERACAO GP LTDA">MRM MINERACAO GP LTDA</option>';
+            Empreendimento_options_str  += '<option value="Mineraçăo Corcovado de Minas Ltda.">Mineraçăo Corcovado de Minas Ltda.</option>';
+            Empreendimento_options_str  += '<option value="Mineraçăo Granduvale Ltda">Mineraçăo Granduvale Ltda</option>';
+            Empreendimento_options_str  += '<option value="Mineraçăo Juparaná Ltda.">Mineraçăo Juparaná Ltda.</option>';
+            Empreendimento_options_str  += '<option value="Mineraçăo Serra Alta de Săo Thomé Ltda">Mineraçăo Serra Alta de Săo Thomé Ltda</option>';
+            Empreendimento_options_str  += '<option value="Mineraçăo Serra do Carimbado Ltda">Mineraçăo Serra do Carimbado Ltda</option>';
+            Empreendimento_options_str  += '<option value="Mineraçăo Săo José LTDA EPP">Mineraçăo Săo José LTDA EPP</option>';
+            Empreendimento_options_str  += '<option value="NEW STONES MINERACAO LTDA">NEW STONES MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="NOVA AURORA MÁRMORES E GRANITOS LTDA.">NOVA AURORA MÁRMORES E GRANITOS LTDA.</option>';
+            Empreendimento_options_str  += '<option value="Nova Aurora Marmores e Granitos Ltda">Nova Aurora Marmores e Granitos Ltda</option>';
+            Empreendimento_options_str  += '<option value="Nova Aurora Mármores e Granitos Ltda">Nova Aurora Mármores e Granitos Ltda</option>';
+            Empreendimento_options_str  += '<option value="OLÍMPIO FERREIRA DE ANDRADE E CIA LTDA">OLÍMPIO FERREIRA DE ANDRADE E CIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="OLÍMPIO FERREIRA DE ANDRADE E CIA. LTDA.">OLÍMPIO FERREIRA DE ANDRADE E CIA. LTDA.</option>';
+            Empreendimento_options_str  += '<option value="OPHIR MINERACAO LTDA">OPHIR MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="OURO MINAS GRANITOS LTDA">OURO MINAS GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="OURO VERDE MINERACAO E FLORESTAS EIRELI">OURO VERDE MINERACAO E FLORESTAS EIRELI</option>';
+            Empreendimento_options_str  += '<option value="OURO VERDE MINERACAO E FLORESTAS LTDA">OURO VERDE MINERACAO E FLORESTAS LTDA</option>';
+            Empreendimento_options_str  += '<option value="PEDRA SABAO DO BRASIL LTDA">PEDRA SABAO DO BRASIL LTDA</option>';
+            Empreendimento_options_str  += '<option value="PEDRAS DECORATIVAS LUMINARIAS EIRELI">PEDRAS DECORATIVAS LUMINARIAS EIRELI</option>';
+            Empreendimento_options_str  += '<option value="POTEGRAN MINERACAO LTDA.">POTEGRAN MINERACAO LTDA.</option>';
+            Empreendimento_options_str  += '<option value="PPR MINERACAO LTDA">PPR MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="Pedreiras do Brasil S/A">Pedreiras do Brasil S/A</option>';
+            Empreendimento_options_str  += '<option value="QUARTZITO DO BRASIL LTDA">QUARTZITO DO BRASIL LTDA</option>';
+            Empreendimento_options_str  += '<option value="R J ARDOSIA LTDA">R J ARDOSIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="R&M MINERACAO LTDA">R&M MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="R.E.D. GRANITI MINERACAO LTDA">R.E.D. GRANITI MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="RAFAEL VIEIRA DA SILVA 08028466613">RAFAEL VIEIRA DA SILVA 08028466613</option>';
+            Empreendimento_options_str  += '<option value="RAGNAROK GRANITOS LTDA">RAGNAROK GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="RENATO LAIGNIER SCHERRE">RENATO LAIGNIER SCHERRE</option>';
+            Empreendimento_options_str  += '<option value="RJ MINERACAO LTDA">RJ MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="RM ROCHAS ORNAMENTAIS EIRELI">RM ROCHAS ORNAMENTAIS EIRELI</option>';
+            Empreendimento_options_str  += '<option value="ROCHA BAHIA MINERACAO LTDA">ROCHA BAHIA MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="ROCHA VERDE BRASIL EXTRACAO E COMERCIO DE MINERIOS LTDA.">ROCHA VERDE BRASIL EXTRACAO E COMERCIO DE MINERIOS LTDA.</option>';
+            Empreendimento_options_str  += '<option value="RONALDO RIBEIRO DE PAULA LTDA">RONALDO RIBEIRO DE PAULA LTDA</option>';
+            Empreendimento_options_str  += '<option value="ROZELI FIDELIS DE MENDONCA">ROZELI FIDELIS DE MENDONCA</option>';
+            Empreendimento_options_str  += '<option value="Ronaldo Ribeiro de Paula Eireli - Me">Ronaldo Ribeiro de Paula Eireli - Me</option>';
+            Empreendimento_options_str  += '<option value="S A L - MINERACAO LTDA">S A L - MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="SANTA HELOISA MINERACAO LTDA">SANTA HELOISA MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="SHEKINAH GRANITOS LTDA">SHEKINAH GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="SMM GRANITOS LTDA">SMM GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="SPE MINESA & BENTES MINERACAO LTDA">SPE MINESA & BENTES MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="SPLENDOUR MINERACAO E TRANSPORTE LTDA">SPLENDOUR MINERACAO E TRANSPORTE LTDA</option>';
+            Empreendimento_options_str  += '<option value="STONE MINERACAO LTDA">STONE MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="STONE MINERAÇÃO LTDA">STONE MINERAÇÃO LTDA</option>';
+            Empreendimento_options_str  += '<option value="SUPER CLASSICO COMERCIO IMPORTACAO E EXPORTACAO LTDA">SUPER CLASSICO COMERCIO IMPORTACAO E EXPORTACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="TATAGIBA STONE MINERACAO LTDA">TATAGIBA STONE MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="TG MINERACAO EIRELI">TG MINERACAO EIRELI</option>';
+            Empreendimento_options_str  += '<option value="THOR GRANITOS E MARMORES LTDA">THOR GRANITOS E MARMORES LTDA</option>';
+            Empreendimento_options_str  += '<option value="TIOGRAN GRANITOS LTDA">TIOGRAN GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="TOLEDO MINERACAO LTDA">TOLEDO MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="TRACOMAL NORTE GRANITOS LTDA">TRACOMAL NORTE GRANITOS LTDA</option>';
+            Empreendimento_options_str  += '<option value="TRANSPORTE E COMERCIO SAO TOME LTDA">TRANSPORTE E COMERCIO SAO TOME LTDA</option>';
+            Empreendimento_options_str  += '<option value="Tracomal Norte Granitos Ltda">Tracomal Norte Granitos Ltda</option>';
+            Empreendimento_options_str  += '<option value="UBIRAJARA PEREIRA">UBIRAJARA PEREIRA</option>';
+            Empreendimento_options_str  += '<option value="VALIGRAN MINERACAO LTDA">VALIGRAN MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="VELOX DIAMOND TOOLS INDUSTRIA LTDA">VELOX DIAMOND TOOLS INDUSTRIA LTDA</option>';
+            Empreendimento_options_str  += '<option value="VILA PEDRAS MINERACAO LTDA">VILA PEDRAS MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="VITORIA MINING - MINERACAO IMPORTACAO E EXPORTACAO LTDA">VITORIA MINING - MINERACAO IMPORTACAO E EXPORTACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="VIVER MINAS MINERACAO LTDA">VIVER MINAS MINERACAO LTDA</option>';
+            Empreendimento_options_str  += '<option value="W F DE ARAUJO">W F DE ARAUJO</option>';
+            Empreendimento_options_str  += '<option value="W. STONE GRANITOS EIRELI">W. STONE GRANITOS EIRELI</option>';
+            Empreendimento_options_str  += '<option value="WESLEY ARRUDA SPOSITO EIRELI">WESLEY ARRUDA SPOSITO EIRELI</option>';
+            Empreendimento_options_str  += '<option value="ZANETTE MINERADORA EIRELI">ZANETTE MINERADORA EIRELI</option>';
+            sel_Empreendimento.innerHTML = Empreendimento_options_str;
+            div_Empreendimento.appendChild(sel_Empreendimento);
+            var lab_Empreendimento = document.createElement('div');
+            lab_Empreendimento.innerHTML = 'Empreendimento';
+            lab_Empreendimento.className = 'filterlabel';
+            div_Empreendimento.appendChild(lab_Empreendimento);
+            var reset_Empreendimento = document.createElement('div');
+            reset_Empreendimento.innerHTML = 'clear filter';
+            reset_Empreendimento.className = 'filterlabel';
+            reset_Empreendimento.onclick = function() {
+                var options = document.getElementById("sel_Empreendimento").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Empreendimento.appendChild(reset_Empreendimento);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Municpio = document.createElement('div');
+            div_Municpio.id = "div_Municpio";
+            div_Municpio.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Municpio);
+            sel_Municpio = document.createElement('select');
+            sel_Municpio.multiple = true;
+            sel_Municpio.size = 10;
+            sel_Municpio.id = "sel_Municpio";
+            var Municpio_options_str = "<option value='' unselected></option>";
+            sel_Municpio.onchange = function(){filterFunc()};
+            Municpio_options_str  += '<option value="Aimorés">Aimorés</option>';
+            Municpio_options_str  += '<option value="Almenara">Almenara</option>';
+            Municpio_options_str  += '<option value="Alpinópolis">Alpinópolis</option>';
+            Municpio_options_str  += '<option value="Alvarenga">Alvarenga</option>';
+            Municpio_options_str  += '<option value="Alvinópolis">Alvinópolis</option>';
+            Municpio_options_str  += '<option value="Alvorada de Minas">Alvorada de Minas</option>';
+            Municpio_options_str  += '<option value="Araçuaí">Araçuaí</option>';
+            Municpio_options_str  += '<option value="Ataléia">Ataléia</option>';
+            Municpio_options_str  += '<option value="Augusto de Lima">Augusto de Lima</option>';
+            Municpio_options_str  += '<option value="Belo Vale">Belo Vale</option>';
+            Municpio_options_str  += '<option value="Bocaiúva">Bocaiúva</option>';
+            Municpio_options_str  += '<option value="Botumirim">Botumirim</option>';
+            Municpio_options_str  += '<option value="Brasilândia de Minas">Brasilândia de Minas</option>';
+            Municpio_options_str  += '<option value="Cabo Verde">Cabo Verde</option>';
+            Municpio_options_str  += '<option value="Cachoeira de Pajeú">Cachoeira de Pajeú</option>';
+            Municpio_options_str  += '<option value="Caetanópolis">Caetanópolis</option>';
+            Municpio_options_str  += '<option value="Caldas">Caldas</option>';
+            Municpio_options_str  += '<option value="Campanário">Campanário</option>';
+            Municpio_options_str  += '<option value="Canaã">Canaã</option>';
+            Municpio_options_str  += '<option value="Candeias">Candeias</option>';
+            Municpio_options_str  += '<option value="Caraí">Caraí</option>';
+            Municpio_options_str  += '<option value="Central de Minas">Central de Minas</option>';
+            Municpio_options_str  += '<option value="Conselheiro Pena">Conselheiro Pena</option>';
+            Municpio_options_str  += '<option value="Coronel Murta">Coronel Murta</option>';
+            Municpio_options_str  += '<option value="Coronel Xavier Chaves">Coronel Xavier Chaves</option>';
+            Municpio_options_str  += '<option value="Cristais">Cristais</option>';
+            Municpio_options_str  += '<option value="Cristália">Cristália</option>';
+            Municpio_options_str  += '<option value="Curvelo">Curvelo</option>';
+            Municpio_options_str  += '<option value="Diamantina">Diamantina</option>';
+            Municpio_options_str  += '<option value="Dores de Guanhães">Dores de Guanhães</option>';
+            Municpio_options_str  += '<option value="Dores de Guanhăes">Dores de Guanhăes</option>';
+            Municpio_options_str  += '<option value="Durandé">Durandé</option>';
+            Municpio_options_str  += '<option value="Espera Feliz">Espera Feliz</option>';
+            Municpio_options_str  += '<option value="Espinosa">Espinosa</option>';
+            Municpio_options_str  += '<option value="Felixlândia">Felixlândia</option>';
+            Municpio_options_str  += '<option value="Felício dos Santos">Felício dos Santos</option>';
+            Municpio_options_str  += '<option value="Franciscópolis">Franciscópolis</option>';
+            Municpio_options_str  += '<option value="Fruta de Leite">Fruta de Leite</option>';
+            Municpio_options_str  += '<option value="GUAPÉ">GUAPÉ</option>';
+            Municpio_options_str  += '<option value="Galiléia">Galiléia</option>';
+            Municpio_options_str  += '<option value="Gouveia">Gouveia</option>';
+            Municpio_options_str  += '<option value="Governador Valadares">Governador Valadares</option>';
+            Municpio_options_str  += '<option value="Grão Mogol">Grão Mogol</option>';
+            Municpio_options_str  += '<option value="Guaraciaba">Guaraciaba</option>';
+            Municpio_options_str  += '<option value="Guiricema">Guiricema</option>';
+            Municpio_options_str  += '<option value="Gurinhatã">Gurinhatã</option>';
+            Municpio_options_str  += '<option value="Ingaí">Ingaí</option>';
+            Municpio_options_str  += '<option value="Itapecerica">Itapecerica</option>';
+            Municpio_options_str  += '<option value="Itinga">Itinga</option>';
+            Municpio_options_str  += '<option value="Itueta">Itueta</option>';
+            Municpio_options_str  += '<option value="Itutinga">Itutinga</option>';
+            Municpio_options_str  += '<option value="Jampruca">Jampruca</option>';
+            Municpio_options_str  += '<option value="Jequitaí">Jequitaí</option>';
+            Municpio_options_str  += '<option value="Jequitinhonha">Jequitinhonha</option>';
+            Municpio_options_str  += '<option value="Jesuânia">Jesuânia</option>';
+            Municpio_options_str  += '<option value="Josenópolis">Josenópolis</option>';
+            Municpio_options_str  += '<option value="Lajinha">Lajinha</option>';
+            Municpio_options_str  += '<option value="Luminárias">Luminárias</option>';
+            Municpio_options_str  += '<option value="Machado">Machado</option>';
+            Municpio_options_str  += '<option value="Manhuaçu">Manhuaçu</option>';
+            Municpio_options_str  += '<option value="Mantena">Mantena</option>';
+            Municpio_options_str  += '<option value="Mariana">Mariana</option>';
+            Municpio_options_str  += '<option value="Medina">Medina</option>';
+            Municpio_options_str  += '<option value="Mercês">Mercês</option>';
+            Municpio_options_str  += '<option value="Minas Novas">Minas Novas</option>';
+            Municpio_options_str  += '<option value="Montezuma">Montezuma</option>';
+            Municpio_options_str  += '<option value="Mutum">Mutum</option>';
+            Municpio_options_str  += '<option value="Novorizonte">Novorizonte</option>';
+            Municpio_options_str  += '<option value="Oliveira Fortes">Oliveira Fortes</option>';
+            Municpio_options_str  += '<option value="Padre Paraíso">Padre Paraíso</option>';
+            Municpio_options_str  += '<option value="Papagaios">Papagaios</option>';
+            Municpio_options_str  += '<option value="Paraopeba">Paraopeba</option>';
+            Municpio_options_str  += '<option value="Passa Tempo">Passa Tempo</option>';
+            Municpio_options_str  += '<option value="Pavão">Pavão</option>';
+            Municpio_options_str  += '<option value="Pedra Dourada">Pedra Dourada</option>';
+            Municpio_options_str  += '<option value="Pedra do Indaiá">Pedra do Indaiá</option>';
+            Municpio_options_str  += '<option value="Piracema">Piracema</option>';
+            Municpio_options_str  += '<option value="Pocrane">Pocrane</option>';
+            Municpio_options_str  += '<option value="Ponto dos Volantes">Ponto dos Volantes</option>';
+            Municpio_options_str  += '<option value="Presidente Kubitschek">Presidente Kubitschek</option>';
+            Municpio_options_str  += '<option value="Raul Soares">Raul Soares</option>';
+            Municpio_options_str  += '<option value="Resplendor">Resplendor</option>';
+            Municpio_options_str  += '<option value="Riachinho">Riachinho</option>';
+            Municpio_options_str  += '<option value="Rio Pardo de Minas">Rio Pardo de Minas</option>';
+            Municpio_options_str  += '<option value="Rio Piracicaba">Rio Piracicaba</option>';
+            Municpio_options_str  += '<option value="Rio Pomba">Rio Pomba</option>';
+            Municpio_options_str  += '<option value="Rubelita">Rubelita</option>';
+            Municpio_options_str  += '<option value="SANTA RITA DE CALDAS">SANTA RITA DE CALDAS</option>';
+            Municpio_options_str  += '<option value="Salinas">Salinas</option>';
+            Municpio_options_str  += '<option value="Santa Bárbara">Santa Bárbara</option>';
+            Municpio_options_str  += '<option value="Santa Rita de Caldas">Santa Rita de Caldas</option>';
+            Municpio_options_str  += '<option value="Santa Rita do Itueto">Santa Rita do Itueto</option>';
+            Municpio_options_str  += '<option value="Santo Antônio do Grama">Santo Antônio do Grama</option>';
+            Municpio_options_str  += '<option value="Santo Antônio do Retiro">Santo Antônio do Retiro</option>';
+            Municpio_options_str  += '<option value="Santos Dumont">Santos Dumont</option>';
+            Municpio_options_str  += '<option value="Senador Modestino Gonçalves">Senador Modestino Gonçalves</option>';
+            Municpio_options_str  += '<option value="Serrania">Serrania</option>';
+            Municpio_options_str  += '<option value="São Francisco de Paula">São Francisco de Paula</option>';
+            Municpio_options_str  += '<option value="São Gonçalo do Rio Preto">São Gonçalo do Rio Preto</option>';
+            Municpio_options_str  += '<option value="São José da Barra">São José da Barra</option>';
+            Municpio_options_str  += '<option value="São José do Divino">São José do Divino</option>';
+            Municpio_options_str  += '<option value="São João do Paraíso">São João do Paraíso</option>';
+            Municpio_options_str  += '<option value="São Pedro dos Ferros">São Pedro dos Ferros</option>';
+            Municpio_options_str  += '<option value="São Thomé das Letras">São Thomé das Letras</option>';
+            Municpio_options_str  += '<option value="Săo José da Barra">Săo José da Barra</option>';
+            Municpio_options_str  += '<option value="Săo Tomé das Letras">Săo Tomé das Letras</option>';
+            Municpio_options_str  += '<option value="Tabuleiro">Tabuleiro</option>';
+            Municpio_options_str  += '<option value="Taiobeiras">Taiobeiras</option>';
+            Municpio_options_str  += '<option value="Teófilo Otoni">Teófilo Otoni</option>';
+            Municpio_options_str  += '<option value="Tombos">Tombos</option>';
+            Municpio_options_str  += '<option value="Uberlândia">Uberlândia</option>';
+            sel_Municpio.innerHTML = Municpio_options_str;
+            div_Municpio.appendChild(sel_Municpio);
+            var lab_Municpio = document.createElement('div');
+            lab_Municpio.innerHTML = 'Município';
+            lab_Municpio.className = 'filterlabel';
+            div_Municpio.appendChild(lab_Municpio);
+            var reset_Municpio = document.createElement('div');
+            reset_Municpio.innerHTML = 'clear filter';
+            reset_Municpio.className = 'filterlabel';
+            reset_Municpio.onclick = function() {
+                var options = document.getElementById("sel_Municpio").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Municpio.appendChild(reset_Municpio);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Classe = document.createElement('div');
+            div_Classe.id = "div_Classe";
+            div_Classe.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Classe);
+            sel_Classe = document.createElement('select');
+            sel_Classe.multiple = true;
+            sel_Classe.size = 5;
+            sel_Classe.id = "sel_Classe";
+            var Classe_options_str = "<option value='' unselected></option>";
+            sel_Classe.onchange = function(){filterFunc()};
+            Classe_options_str  += '<option value="1">1</option>';
+            Classe_options_str  += '<option value="2">2</option>';
+            Classe_options_str  += '<option value="3">3</option>';
+            Classe_options_str  += '<option value="4">4</option>';
+            Classe_options_str  += '<option value="5">5</option>';
+            sel_Classe.innerHTML = Classe_options_str;
+            div_Classe.appendChild(sel_Classe);
+            var lab_Classe = document.createElement('div');
+            lab_Classe.innerHTML = 'Classe';
+            lab_Classe.className = 'filterlabel';
+            div_Classe.appendChild(lab_Classe);
+            var reset_Classe = document.createElement('div');
+            reset_Classe.innerHTML = 'clear filter';
+            reset_Classe.className = 'filterlabel';
+            reset_Classe.onclick = function() {
+                var options = document.getElementById("sel_Classe").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Classe.appendChild(reset_Classe);
+        </script>
+    </body>
+</html>
